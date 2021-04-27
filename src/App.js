@@ -1,23 +1,27 @@
-import logo from './logo.svg';
+import { useEffect, useState } from 'react';
 import './App.css';
+import Listing from './components/listing/Listing';
+import fetchData from './service/service';
 
 function App() {
+
+  const [data, setData] = useState([]);
+  const [search, setSearch] = useState('');
+
+  useEffect(()=>{
+    fetchData().then(res => setData(res))
+  }, [])
+
+  const filteredData = data.filter(item => {
+    return item.languageNameEnglish.toLowerCase().includes(search.toLowerCase())
+  })
+  
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="App py-3">
+      <div className="container">
+      <input type="text" name="search" id="search" className="form-control" placeholder="Search Language Here..." onChange={(e)=>setSearch(e.target.value)}/>
+      <Listing listData={filteredData}/>
+      </div>
     </div>
   );
 }
